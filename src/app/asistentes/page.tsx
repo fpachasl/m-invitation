@@ -5,7 +5,7 @@ import { desc } from "drizzle-orm";
 import { db, ensureSchema } from "@/db";
 import { rsvps } from "@/db/schema";
 import { login } from "./actions";
-import { AUTH_COOKIE, safeEqual, sessionToken } from "./auth";
+import { AUTH_COOKIE, getAdminKey, safeEqual, sessionToken } from "./auth";
 
 export const metadata: Metadata = {
   title: "Asistentes · 60 años",
@@ -20,9 +20,9 @@ const dateFormat = new Intl.DateTimeFormat("es-PE", {
 
 export default async function AsistentesPage({ searchParams }: PageProps<"/asistentes">) {
   const { error } = await searchParams;
-  const adminKey = process.env.ADMIN_KEY;
+  const adminKey = getAdminKey();
 
-  // Fuera de desarrollo local la lista es privada: sin ADMIN_KEY configurada no se muestra.
+  // Fuera de desarrollo local la lista es privada: sin ADMIN_KEY válida no se muestra.
   if (!adminKey && process.env.NODE_ENV !== "development") notFound();
 
   const session = (await cookies()).get(AUTH_COOKIE)?.value;

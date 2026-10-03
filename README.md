@@ -34,6 +34,7 @@ Se usa **Turso** (SQLite en la nube, mismo código, plan gratuito):
    - `TURSO_DATABASE_URL` (ej. `libsql://invitacion-tuusuario.turso.io`)
    - `TURSO_AUTH_TOKEN`
    - `ADMIN_KEY`: clave para ver `/asistentes` (la página pide la clave y recuerda la sesión 30 días).
-     Usa una clave larga y aleatoria (20+ caracteres) para que no se pueda adivinar.
+     Debe tener **al menos 20 caracteres** (si es más corta, `/asistentes` queda bloqueada).
+     Genera una con: `node -e "console.log(crypto.randomBytes(18).toString('base64url'))"`
      **Obligatoria en producción**: sin ella `/asistentes` responde 404 para no exponer los datos de los invitados.
 3. Despliega. La tabla se crea sola en la primera confirmación.

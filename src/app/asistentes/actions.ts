@@ -2,10 +2,10 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AUTH_COOKIE, safeEqual, sessionToken } from "./auth";
+import { AUTH_COOKIE, getAdminKey, safeEqual, sessionToken } from "./auth";
 
 export async function login(formData: FormData) {
-  const adminKey = process.env.ADMIN_KEY;
+  const adminKey = getAdminKey();
   const clave = formData.get("clave");
 
   if (!adminKey || typeof clave !== "string" || !safeEqual(clave, adminKey)) {
