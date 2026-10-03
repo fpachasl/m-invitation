@@ -22,8 +22,8 @@ export default async function AsistentesPage({ searchParams }: PageProps<"/asist
   const { error } = await searchParams;
   const adminKey = process.env.ADMIN_KEY;
 
-  // En producción la lista es privada: sin ADMIN_KEY configurada no se muestra.
-  if (!adminKey && process.env.NODE_ENV === "production") notFound();
+  // Fuera de desarrollo local la lista es privada: sin ADMIN_KEY configurada no se muestra.
+  if (!adminKey && process.env.NODE_ENV !== "development") notFound();
 
   const session = (await cookies()).get(AUTH_COOKIE)?.value;
   if (adminKey && !safeEqual(session, sessionToken(adminKey))) {

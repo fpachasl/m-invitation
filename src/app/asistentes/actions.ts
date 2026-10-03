@@ -9,6 +9,8 @@ export async function login(formData: FormData) {
   const clave = formData.get("clave");
 
   if (!adminKey || typeof clave !== "string" || !safeEqual(clave, adminKey)) {
+    // Frena intentos de adivinar la clave por fuerza bruta.
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     redirect("/asistentes?error=1");
   }
 
