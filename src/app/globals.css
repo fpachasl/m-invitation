@@ -9,12 +9,13 @@
 }
 
 html {
-  background: #cfcfcf;
+  background: #d9d9d9;
 }
 
 body {
   color: var(--color-ink);
   font-family: var(--font-serif);
+  /* Respaldo para pantallas más anchas que la escena. */
   background:
     linear-gradient(rgb(255 255 255 / 0.15), rgb(255 255 255 / 0.15)),
     url("/fondo-marmol.jpg") center / cover fixed;
@@ -30,6 +31,32 @@ body {
   aspect-ratio: 1240 / 1748;
   width: min(100vw, 100svh * 1240 / 1748);
   --u: calc(100cqw / 1240);
+  isolation: isolate;
+}
+
+/*
+ * Escena de mármol con flores alrededor de la tarjeta (3840 × 3028 px del diseño,
+ * con el diseño original en la posición 1300, 640). Comparte escala con la tarjeta,
+ * así que el mármol y las flores continúan sin cortes.
+ */
+.invitation::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: calc(var(--u) * -1300);
+  top: calc(var(--u) * -640);
+  width: calc(var(--u) * 3840);
+  height: calc(var(--u) * 3028);
+  background: url("/fondo-escena.webp") center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+/* La tarjeta nítida se funde con la escena en los márgenes de mármol. */
+.invitation-base {
+  mask-image:
+    linear-gradient(to right, transparent calc(var(--u) * 58), #000 calc(var(--u) * 90), #000 calc(var(--u) * 1153), transparent calc(var(--u) * 1185)),
+    linear-gradient(to bottom, transparent calc(var(--u) * 28), #000 calc(var(--u) * 56));
+  mask-composite: intersect;
 }
 
 /* Pantallas angostas (móvil): recortar el mármol lateral para agrandar la tarjeta. */

@@ -44,7 +44,7 @@ export function Invitation() {
         aria-hidden
         draggable={false}
         fetchPriority="high"
-        className="absolute inset-0 h-full w-full"
+        className="invitation-base absolute inset-0 h-full w-full"
       />
 
       {SPARKLES.map((s, i) => (
