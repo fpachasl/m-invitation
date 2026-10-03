@@ -51,11 +51,11 @@ body {
   pointer-events: none;
 }
 
-/* La tarjeta nítida se funde con la escena en los márgenes de mármol. */
+/* De la imagen nítida solo se muestra la tarjeta; el mármol y las flores salen de la escena. */
 .invitation-base {
   mask-image:
-    linear-gradient(to right, transparent calc(var(--u) * 58), #000 calc(var(--u) * 90), #000 calc(var(--u) * 1153), transparent calc(var(--u) * 1185)),
-    linear-gradient(to bottom, transparent calc(var(--u) * 28), #000 calc(var(--u) * 56));
+    linear-gradient(to right, transparent calc(var(--u) * 92), #000 calc(var(--u) * 94), #000 calc(var(--u) * 1149), transparent calc(var(--u) * 1151)),
+    linear-gradient(to bottom, transparent calc(var(--u) * 56), #000 calc(var(--u) * 58));
   mask-composite: intersect;
 }
 
