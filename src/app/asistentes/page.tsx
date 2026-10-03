@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { desc } from "drizzle-orm";
-import { db, ensureSchema } from "@/db";
-import { rsvps } from "@/db/schema";
+import { getDb } from "@/db";
+import { rsvps, type Rsvp } from "@/db/schema";
 import { login } from "./actions";
 import { AUTH_COOKIE, getAdminKey, safeEqual, sessionToken } from "./auth";
 
@@ -49,8 +49,20 @@ export default async function AsistentesPage({ searchParams }: PageProps<"/asist
     );
   }
 
-  await ensureSchema();
-  const rows = await db.select().from(rsvps).orderBy(desc(rsvps.updatedAt));
+  let rows: Rsvp[];
+  try {
+    const db = await getDb();
+    rows = await db.select().from(rsvps).orderBy(desc(rsvps.updatedAt));
+  } catch (error) {
+    console.error("No se pudo leer la lista de asistentes", error);
+    return (
+      <Shell>
+        <p className="mt-10 text-center text-sm">
+          No se pudo conectar a la base de datos. Revisa TURSO_DATABASE_URL y TURSO_AUTH_TOKEN.
+        </p>
+      </Shell>
+    );
+  }
 
   const going = rows.filter((r) => r.attending);
   const notGoing = rows.filter((r) => !r.attending);

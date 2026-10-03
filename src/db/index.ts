@@ -1,7 +1,7 @@
 import "server-only";
 import { mkdirSync } from "node:fs";
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
+import { createClient, type Client } from "@libsql/client";
+import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
 /**
@@ -21,18 +21,22 @@ function databaseUrl() {
   return "file:data/invitacion.db";
 }
 
-const client = createClient({
-  url: databaseUrl(),
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
-
-export const db = drizzle(client, { schema });
-
+let client: Client | undefined;
+let database: LibSQLDatabase<typeof schema> | undefined;
 let ready: Promise<unknown> | undefined;
 
+/** Conexión creada en el primer uso, para que el build no dependa de la base de datos. */
+function getClient() {
+  client ??= createClient({
+    url: databaseUrl(),
+    authToken: process.env.TURSO_AUTH_TOKEN,
+  });
+  return client;
+}
+
 /** Crea la tabla si no existe (sin pasos de migración manuales). */
-export function ensureSchema() {
-  ready ??= client
+function ensureSchema() {
+  ready ??= getClient()
     .batch(
       [
         `CREATE TABLE IF NOT EXISTS rsvps (
@@ -55,4 +59,11 @@ export function ensureSchema() {
       throw error;
     });
   return ready;
+}
+
+/** Base de datos lista para usar (con la tabla creada). */
+export async function getDb() {
+  await ensureSchema();
+  database ??= drizzle(getClient(), { schema });
+  return database;
 }

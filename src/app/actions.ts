@@ -3,7 +3,7 @@
 import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { db, ensureSchema } from "@/db";
+import { getDb } from "@/db";
 import { rsvps } from "@/db/schema";
 import { EVENT } from "@/lib/event";
 
@@ -52,7 +52,7 @@ export async function submitRsvp(_prev: RsvpState, formData: FormData): Promise<
   const total = isAttending ? (guests ?? 1) : 0;
 
   try {
-    await ensureSchema();
+    const db = await getDb();
     const nameKey = name.normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s+/g, " ").toLowerCase();
     const values = { name, attending: isAttending, guests: total, message: message ?? null };
     // Si este navegador ya respondió con el mismo nombre, se actualiza en lugar de duplicar.
